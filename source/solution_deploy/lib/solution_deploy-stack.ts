@@ -167,7 +167,8 @@ export class SolutionDeployStack extends cdk.Stack {
         compatibleRuntimes: [
             lambda.Runtime.PYTHON_3_6,
             lambda.Runtime.PYTHON_3_7,
-            lambda.Runtime.PYTHON_3_8
+            lambda.Runtime.PYTHON_3_8,
+            lambda.Runtime.PYTHON_3_9
         ],
         description: 'SO0111 SHARR Common functions used by the solution',
         license: "https://www.apache.org/licenses/LICENSE-2.0",

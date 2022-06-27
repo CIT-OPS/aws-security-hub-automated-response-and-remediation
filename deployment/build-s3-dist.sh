@@ -200,6 +200,8 @@ if [[ $cdkver != $required_cdk_version ]]; then
     echo Required CDK version is $required_cdk_version, found $cdkver
     exit 255
 fi
+
+cdkver1Ignore=`cdk acknowledge 19836`
 do_cmd npm run build       # build javascript from typescript
 
 echo "------------------------------------------------------------------------------"
@@ -215,7 +217,7 @@ find . -name package-lock.json | while read file;do rm $file; done
 
 mkdir -p $temp_work_dir/source/solution_deploy/lambdalayer/python
 cp ${template_dir}/${source_dir}/LambdaLayers/*.py $temp_work_dir/source/solution_deploy/lambdalayer/python
-do_cmd pip install -r $template_dir/requirements.txt -t $temp_work_dir/source/solution_deploy/lambdalayer/python
+do_cmd pip3 install -r $template_dir/requirements.txt -t $temp_work_dir/source/solution_deploy/lambdalayer/python
 cd $temp_work_dir/source/solution_deploy/lambdalayer
 zip --recurse-paths ${build_dist_dir}/lambda/layer.zip python
 
@@ -277,6 +279,7 @@ done
 echo "------------------------------------------------------------------------------"
 echo "[Create] Deployment Templates"
 echo "------------------------------------------------------------------------------"
+echo ${template_dir}
 # Don't build the deployment template until AFTER the playbooks
 cd ${template_dir}/${source_dir}/solution_deploy
 
