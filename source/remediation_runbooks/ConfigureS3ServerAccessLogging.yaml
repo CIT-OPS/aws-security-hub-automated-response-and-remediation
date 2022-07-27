@@ -15,7 +15,8 @@ description: |
 schemaVersion: '0.3'
 assumeRole: '{{ AutomationAssumeRole }}'
 outputs:
-  - RemediateTargetBucket.Output
+  - RemediateTargetBucket.RemediationResultStatus
+  - RemediateTargetBucket.RemediationResultMessage
 parameters:
   Finding:
     type: StringMap
@@ -41,9 +42,7 @@ mainSteps:
         Resource: '{{ Resource }}'
         Finding: '{{Finding}}'
       Script: |-
-      %%SCRIPT=CreateServerAccessLogging_CreateDestBucket.py%%
-      
-
+        %%SCRIPT=CreateServerAccessLogging_CreateDestBucket.py%%
     isCritical: true
     maxAttempts: 2
     timeoutSeconds: 60
@@ -73,9 +72,11 @@ mainSteps:
         Resource: '{{Resource}}'
         Finding: '{{Finding}}'
       Script: |-
-      %%SCRIPT=CreateServerAccessLogging_ApplyConfig.py%%
-
+        %%SCRIPT=CreateServerAccessLogging_ApplyConfig.py%%
     outputs:
-    - Name: Output
-      Selector: $.Payload.output
-      Type: StringMap
+      - Name: RemediationResultMessage
+        Selector: $.Payload.output.message
+        Type: String
+      - Name: RemediationResultStatus
+        Selector: $.Payload.output.status
+        Type: String

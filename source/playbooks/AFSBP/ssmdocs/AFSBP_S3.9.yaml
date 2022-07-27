@@ -17,6 +17,8 @@ schemaVersion: '0.3'
 assumeRole: '{{ AutomationAssumeRole }}'
 outputs:
   - ParseInput.Resource
+  - Remediation.remediationOutputMessage
+  - Remediation.remediationOutputStatus
 parameters:
   Finding:
     type: StringMap
@@ -29,7 +31,6 @@ parameters:
 mainSteps:
   - name: ParseInput
     action: 'aws:executeScript'
-    isEnd: false
     outputs:
       - Name: AccountId
         Selector: $.Payload.account_id
@@ -46,6 +47,12 @@ mainSteps:
       - Name: Resource
         Selector: $.Payload.resource
         Type: StringMap
+      - Name: ResourceId
+        Selector: $.Payload.resource.Id
+        Type: String
+      - Name: FindingRegion
+        Selector: $.Payload.finding.Region
+        Type: String
     inputs:
       InputPayload:
         Finding: '{{Finding}}'
@@ -54,11 +61,17 @@ mainSteps:
           - S3.9
       Runtime: python3.8
       Handler: parse_event
-    Script: |-
-      %%SCRIPT=afsbp_parse_input.py%%
-    
-    
-    
+      Script: |-
+        %%SCRIPT=common/parse_input.py%%
+    isEnd: false
+  - name: SkipLoggingBucket
+    action: 'aws:branch'
+    inputs:
+      Choices:
+        - NextStep: SuppressFinding
+          Variable: '{{ParseInput.ResourceId}}'
+          StringEquals: 'arn:aws:s3:::cnxc-s3-server-access-logging-{{global:ACCOUNT_ID}}-{{ParseInput.FindingRegion}}'
+    nextStep: Remediation
   - name: Remediation
     action: 'aws:executeAutomation'
     isEnd: false
@@ -69,13 +82,12 @@ mainSteps:
         Resource: '{{ParseInput.Resource}}'
         Finding: '{{Finding}}'
     outputs:
-      - Name: message
-        Selector: $.Payload.message
+      - Name: remediationOutputMessage
+        Selector: $.Payload.RemediationResultStatus
         Type: String
-      - Name: status
-        Selector: $.Payload.status
+      - Name: remediationOutputStatus
+        Selector: $.Payload.RemediationResultMessage
         Type: String
-
   - name: UpdateFinding
     action: 'aws:executeAwsApi'
     inputs:
@@ -85,9 +97,23 @@ mainSteps:
         - Id: '{{ParseInput.FindingId}}'
           ProductArn: '{{ParseInput.ProductArn}}'
       Note:
-        Text: '{{Remediation.message}}'
+        Text: Configured Server Access Logging
         UpdatedBy: SHARR-AFSBP_1.0.0_S3.9-CNXC
       Workflow:
-        Status: '{{Remediation.status}}'
+        Status: RESOLVED
     description: Update finding
+    isEnd: true
+  - name: SuppressFinding
+    action: 'aws:executeAwsApi'
+    inputs:
+      Service: securityhub
+      Api: BatchUpdateFindings
+      FindingIdentifiers:
+        - Id: '{{ParseInput.FindingId}}'
+          ProductArn: '{{ParseInput.ProductArn}}'
+      Note:
+        Text: Bucket Exempt From Server Access Logging
+        UpdatedBy: SHARR-AFSBP_1.0.0_S3.9-CNXC
+      Workflow:
+        Status: SUPPRESSED
     isEnd: true

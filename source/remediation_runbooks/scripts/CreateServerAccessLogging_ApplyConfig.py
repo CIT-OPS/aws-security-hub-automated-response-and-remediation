@@ -5,8 +5,11 @@ import time
 from pprint import pprint
 import botocore
 import boto3
+from botocore.exceptions import ClientError
+
 
 def enableAccessLogging(s3, bucketName, storageBucket, targetPrefix):
+  print("Now setting logging on", bucketName)
   return s3.put_bucket_logging(
       Bucket=bucketName,
       BucketLoggingStatus={
@@ -18,9 +21,8 @@ def enableAccessLogging(s3, bucketName, storageBucket, targetPrefix):
   )
 
 def lambda_handler(event, context):
-  s3 = boto3.resource('s3')
   s3_client = boto3.client('s3')
-
+  s3 = boto3.resource('s3')
   resourceId = event['Resource']['Id']
   region = event['Resource']['Region']
   bucketArray = resourceId.split(':')
@@ -29,6 +31,7 @@ def lambda_handler(event, context):
   destBucket = 'cnxc-s3-server-access-logging-' + AwsAccountId + '-' + region
   targetPrefix = fixmeBucket+'/'
   
+  print(fixmeBucket, destBucket, targetPrefix)
   if fixmeBucket == destBucket:
       return {
         'output':
@@ -41,8 +44,7 @@ def lambda_handler(event, context):
           }
       }
 
-  result = enableAccessLogging(s3_client, fixmeBucket, destBucket, targetPrefix)
-  
+  output = enableAccessLogging(s3_client, fixmeBucket, destBucket, targetPrefix)
   return {
     'output':
       {
