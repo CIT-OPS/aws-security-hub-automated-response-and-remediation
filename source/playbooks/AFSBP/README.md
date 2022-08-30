@@ -9,6 +9,7 @@ The AWS Foundational Security Best Practices (AFSBP) playbook is part of the AWS
 * CloudTrail.5
 * Config.1
 * CodeBuild.2
+* DynamoDB.2
 * EC2.1
 * EC2.2
 * EC2.6
