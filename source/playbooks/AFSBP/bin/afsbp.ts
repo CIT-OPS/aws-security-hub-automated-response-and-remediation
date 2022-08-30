@@ -35,6 +35,7 @@ const remediations: IControl[] = [
   { "control": 'CloudTrail.5' },
   { "control": 'CodeBuild.2' },
   { "control": 'Config.1' },
+  { "control": 'DynamoDB.2' },
   { "control": 'EC2.1' },
   { "control": 'EC2.2' },
   { "control": 'EC2.6' },

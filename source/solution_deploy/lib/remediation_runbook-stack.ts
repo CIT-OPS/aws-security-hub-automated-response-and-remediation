@@ -2102,6 +2102,7 @@ export class RemediationRunbookStack extends cdk.Stack {
         }
       };
     }
+<<<<<<< HEAD
   
     //-----------------------
     // ConfigureS3ServerAccessLogging
@@ -2117,6 +2118,20 @@ export class RemediationRunbookStack extends cdk.Stack {
         remediationPolicy.effect = Effect.ALLOW
         remediationPolicy.addResources("*")
         inlinePolicy.addStatements(remediationPolicy)
+=======
+    //-----------------------
+    // EnableDynamoDB_PITR
+    //
+    {
+      const remediationName = 'EnableDynamoDB_PITR';
+      const inlinePolicy = new Policy(props.roleStack, `SHARR-Remediation-Policy-${remediationName}`);
+
+      const remediationPolicy = new PolicyStatement();
+      remediationPolicy.addActions('dynamodb:UpdateContinuousBackups');
+      remediationPolicy.effect = Effect.ALLOW;
+      remediationPolicy.addResources("*");
+      inlinePolicy.addStatements(remediationPolicy);
+>>>>>>> DynamoDB.2
 
       new SsmRole(props.roleStack, 'RemediationRole ' + remediationName, {
         solutionId: props.solutionId,
