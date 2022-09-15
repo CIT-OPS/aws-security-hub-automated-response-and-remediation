@@ -41,15 +41,3 @@ cdk.context.json
 .cache
 nosetests.xml
 coverage.xml
-=======
-/deployment/global-s3-assets
-/deployment/regional-s3-assets
-/deployment/temp
-/deployment/setenv.sh
-*.js
-*.d.ts
-cdk.out
-/source/node_modules
-/source/cdk.*
-!*.py
->>>>>>> DynamoDB.2
