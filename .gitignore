@@ -1,43 +1,39 @@
-<<<<<<< HEAD
-!/.gitattributes
-!/.github/workflows/pull-request-lint.yml
-!/package.json
-!/LICENSE
-!/.npmignore
-deployment/global-s3-assets/
-deployment/regional-s3-assets/
-deployment/temp/
-deployment/test/
-source/node_modules/
-*.pyc
-!/.github/workflows/build.yml
-!/.mergify.yml
-!/.github/workflows/upgrade.yml
-!/.github/pull_request_template.md
-!/test/
-!/tsconfig.json
-!/tsconfig.dev.json
-!/src/
-/lib
-/dist/
-!/.eslintrc.json
-/assets/
-!/cdk.json
-/cdk.out/
-.cdk.staging/
-.parcel-cache/
-*.pyc
-*.js
-*.csv
-cdk.out
-cdk.context.json
-**/.pytest_cache/
-*.zip
-*.d.ts
+# build
+/deployment/global-s3-assets/
+/deployment/open-source/
+/deployment/regional-s3-assets/
+/deployment/setenv.sh
+/deployment/temp/
 
-# Unit test / coverage reports
-.tox/
+# test
+/deployment/test/coverage-reports/
+
+# Typescript
+/source/dist/
+*.d.ts
+*.js
+
+# config
+!.eslintrc.js
+
+# Node
+node_modules/
+
+# CDK
+cdk.out/
+
+# Jest
+coverage/
+
+# Python
+.venv/
+__pycache__/
+
+# pytest
 .coverage
-.cache
-nosetests.xml
-coverage.xml
+
+# IDE
+.vscode/
+
+# system
+.DS_Store
