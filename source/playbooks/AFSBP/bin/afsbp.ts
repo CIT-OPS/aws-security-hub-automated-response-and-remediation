@@ -70,7 +70,7 @@ const remediations: IControl[] = [
   { control: 'SNS.1' },
   { control: 'SNS.2' },
   { control: 'SQS.1' },
-  { "control": 'S3.9' },
+  { control: 'S3.9' },
 ];
 
 const adminStack = new PlaybookPrimaryStack(app, 'AFSBPStack', {

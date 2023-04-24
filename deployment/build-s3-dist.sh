@@ -69,7 +69,9 @@ main() {
 		version=v"$version"
 	fi
 
+	echo "Cleaning directories"
 	clean "${clean_dirs[@]}"
+	echo "Cleaning complete"
 
 	# Save in environmental variables to simplify builds (?)
 	echo "export DIST_OUTPUT_BUCKET=$bucket" > "$template_dir"/setenv.sh
@@ -144,7 +146,8 @@ main() {
 			continue
 		fi
 		echo Create $playbook playbook
-		pushd "$source_dir"/playbooks/"$playbook"
+		echo pushd "$source_dir"/playbooks/"$playbook"
+		pushd "$source_dir"/playbooks/"$playbook" 
 		npx cdk synth
 		cd cdk.out
 		for template in $(ls *.template.json); do
